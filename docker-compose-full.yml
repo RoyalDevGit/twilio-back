@@ -1,0 +1,171 @@
+version: "3.7"
+volumes:
+  api_node_modules:
+  db1:
+  db2:
+  db3:
+  opensearch-data1:
+  opensearch-data2:
+services:
+  api:
+    build: .
+    command: yarn dev:container
+    volumes: 
+      - .:/usr/src/app
+      - api_node_modules:/usr/src/app/node_modules
+    ports: 
+      - "4000:4000"
+      - "9222:9222"
+    env_file:
+      - ./.env
+  daemon:
+    build: 
+      context: .
+      dockerfile: './src/daemon/Dockerfile'
+    command: yarn daemon:container
+    volumes: 
+      - .:/usr/src/app
+      - api_node_modules:/usr/src/app/node_modules
+    ports: 
+      - "9223:9223"
+    env_file:
+      - ./.env
+  mongo-replica-setup:
+    container_name: mongo-setup
+    logging:
+      driver: none
+    image: mongo:latest
+    restart: on-failure
+    volumes:
+      - ./docker/mongodb/:/scripts/
+    entrypoint: ["bash", "/scripts/mongo-setup.sh" ]
+    env_file:
+        - .env
+    environment:
+        MONGO_INITDB_ROOT_USERNAME: ${DOCDB_INITDB_ROOT_USERNAME}
+        MONGO_INITDB_ROOT_PASSWORD: ${DOCDB_INITDB_ROOT_PASSWORD}
+    depends_on:
+    - db1
+    - db2
+    - db3
+  db1:
+      image: mongo:latest
+      logging:
+        driver: none
+      restart: always
+      ports: 
+        - "8465:27017"
+      env_file:
+        - .env
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: ${DOCDB_INITDB_ROOT_USERNAME}
+        MONGO_INITDB_ROOT_PASSWORD: ${DOCDB_INITDB_ROOT_PASSWORD}
+      volumes:
+        - db1:/data/db
+        - ./ssl/mongo-keyfile:/mongo-keyfile
+        - ./docker/mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+      healthcheck:
+        test: test $$(echo "rs.status().ok" | mongo -u $${MONGO_INITDB_ROOT_USERNAME} -p $${DOCDB_INITDB_ROOT_PASSWORD} --quiet) -eq 1
+        interval: 30s
+        start_period: 60s
+      expose:
+        - "27017"
+      command: ["mongod", "--replSet", "${DOCDB_REPLICA_SET}", "--bind_ip_all", "--keyFile", "/mongo-keyfile"]
+  db2:
+      image: mongo:latest
+      logging:
+        driver: none
+      restart: always
+      env_file:
+        - .env
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: ${DOCDB_INITDB_ROOT_USERNAME}
+        MONGO_INITDB_ROOT_PASSWORD: ${DOCDB_INITDB_ROOT_PASSWORD}
+      volumes:        
+        - db2:/data/db
+        - ./ssl/mongo-keyfile:/mongo-keyfile
+        - ./docker/mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+      healthcheck:
+        test: test $$(echo "rs.status().ok" | mongo -u $${MONGO_INITDB_ROOT_USERNAME} -p $${DOCDB_INITDB_ROOT_PASSWORD} --quiet) -eq 1
+        interval: 30s
+        start_period: 60s
+      expose:
+        - "27017"
+      command: ["mongod", "--replSet", "${DOCDB_REPLICA_SET}", "--bind_ip_all", "--keyFile", "/mongo-keyfile"]
+  db3:
+      image: mongo:latest
+      logging:
+        driver: none
+      restart: always
+      env_file:
+        - .env
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: ${DOCDB_INITDB_ROOT_USERNAME}
+        MONGO_INITDB_ROOT_PASSWORD: ${DOCDB_INITDB_ROOT_PASSWORD}
+      volumes:
+        - db3:/data/db
+        - ./ssl/mongo-keyfile:/mongo-keyfile
+        - ./docker/mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+      healthcheck:
+        test: test $$(echo "rs.status().ok" | mongo -u $${MONGO_INITDB_ROOT_USERNAME} -p $${DOCDB_INITDB_ROOT_PASSWORD} --quiet) -eq 1
+        interval: 30s
+        start_period: 60s
+      expose:
+        - "27017"
+      command: ["mongod", "--replSet", "${DOCDB_REPLICA_SET}", "--bind_ip_all", "--keyFile", "/mongo-keyfile"]
+  opensearch-node1:
+    image: opensearchproject/opensearch:2.0.1
+    container_name: opensearch-node1
+    logging:
+      driver: none
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node1
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2
+      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch-data1:/usr/share/opensearch/data
+    ports:
+      - 9200:9200
+      - 9600:9600
+  opensearch-node2:
+    image: opensearchproject/opensearch:2.0.1
+    container_name: opensearch-node2
+    logging:
+      driver: none
+    environment:
+      - cluster.name=opensearch-cluster
+      - node.name=opensearch-node2
+      - discovery.seed_hosts=opensearch-node1,opensearch-node2
+      - cluster.initial_master_nodes=opensearch-node1,opensearch-node2
+      - bootstrap.memory_lock=true
+      - "OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - opensearch-data2:/usr/share/opensearch/data
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.0.1
+    container_name: opensearch-dashboards
+    logging:
+      driver: none
+    ports:
+      - 5601:5601
+    expose:
+      - "5601"
+    environment:
+      OPENSEARCH_HOSTS: '["https://opensearch-node1:9200","https://opensearch-node2:9200"]'

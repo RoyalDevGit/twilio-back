@@ -1,0 +1,7 @@
+{
+  "ignore": ["**/*.test.ts", "**/*.spec.ts", "node_modules"],
+  "watch": ["src", "locales", "migrate-mongo-config.ts"],
+  "exec": "yarn start:debug",
+  "ext": "js, ts, json, yaml",
+  "legacyWatch": true
+}

@@ -1,0 +1,189 @@
+{
+  "simpleMessage": {
+    "subject": "Simple Message",
+    "body": "Hello {{firstName}}, I am just a simple message"
+  },
+  "welcome": {
+    "expert": {
+      "subject": "Welcome to Expert Session!",
+      "plainText": {
+        "body": "Welcome to Expert Session!"
+      }
+    },
+    "consumer": {
+      "subject": "Welcome to Expert Session!",
+      "plainText": {
+        "body": "Welcome to Expert Session!"
+      }
+    }
+  },
+  "verifyEmail": {
+    "subject": "Verify Your Email"
+  },
+  "resetPassword": {
+    "subject": "Reset Password"
+  },
+  "newExpertFavorite": {
+    "subject": "New Follower",
+    "plainText": {
+      "body": "{{consumerFullName}} added you to their favorites list."
+    }
+  },
+  "sessionOrderConfirmation": {
+    "expert": {
+      "subject": "New Session",
+      "plainText": {
+        "body": "{{consumerFullName}} has booked a session with you."
+      }
+    },
+    "consumer": {
+      "subject": "Order Confirmation"
+    }
+  },
+  "instantSessionOrderConfirmation": {
+    "expert": {
+      "subject": "New Instant Session",
+      "plainText": {
+        "body": "{{consumerFirstName}} is ready to connect."
+      },
+      "sms": {
+        "body": "{{consumerFullName}} just booked an instant session and is ready to connect. Please join as soon as possible: {{- sessionJoinUrl}}"
+      }
+    },
+    "consumer": {
+      "subject": "Order Confirmation"
+    }
+  },
+  "sessionExtensionOrderConfirmation": {
+    "expert": {
+      "subject": "Session Extended"
+    },
+    "consumer": {
+      "subject": "Session Extended"
+    }
+  },
+  "sessionCancellation": {
+    "expert": {
+      "subject": "Cancelled Session",
+      "plainText": {
+        "body": "{{consumerFirstName}} has cancelled their session with you."
+      }
+    },
+    "consumer": {
+      "subject": "Cancelled Session",
+      "plainText": {
+        "body": "{{expertFirstName}} has cancelled their session with you."
+      }
+    }
+  },
+  "sessionReschedule": {
+    "expert": {
+      "subject": "Session Rescheduled",
+      "plainText": {
+        "body": "{{consumerFirstName}} has rescheduled their session with you."
+      }
+    },
+    "consumer": {
+      "subject": "Session Rescheduled",
+      "plainText": {
+        "body": "{{expertFirstName}} has rescheduled their session with you."
+      }
+    }
+  },
+  "missedSession": {
+    "expert": {
+      "subject": "Missed Session",
+      "plainText": {
+        "body": "You missed your session with {{consumerFirstName}}."
+      }
+    },
+    "consumer": {
+      "subject": "Missed Session",
+      "plainText": {
+        "body": "You missed your session with {{expertFirstName}}."
+      }
+    }
+  },
+  "missedSessionApology": {
+    "subject": "Your expert missed your session",
+    "plainText": {
+      "body": "{{expertFirstName}} missed your session."
+    }
+  },
+  "upcomingSession": {
+    "expert": {
+      "subject": "Upcoming Session",
+      "plainText": {
+        "body": "Your session with {{consumerFirstName}} starts {{sessionStartRemainingTime}}."
+      }
+    },
+    "consumer": {
+      "subject": "Upcoming Session",
+      "plainText": {
+        "body": "Your session with {{expertFirstName}} starts {{sessionStartRemainingTime}}."
+      }
+    }
+  },
+  "failedPaymentSessionCancellation": {
+    "expert": {
+      "subject": "Your session was cancelled due to unsuccessful payment",
+      "plainText": {
+        "body": "Session canceled due to failed payment."
+      }
+    },
+    "consumer": {
+      "subject": "Your session was cancelled due to unsuccessful payment",
+      "plainText": {
+        "body": "Session canceled due to failed payment."
+      }
+    }
+  },
+  "expertRating": {
+    "subject": "New Rating",
+    "plainText": {
+      "body": "You have a new rating from {{consumerFirstName}}"
+    }
+  },
+  "expertRatingAndComment": {
+    "subject": "New Rating",
+    "plainText": {
+      "body": "You have a new rating and comment from {{consumerFirstName}}."
+    }
+  },
+  "expertComment": {
+    "subject": "New Comment",
+    "plainText": {
+      "body": "You have a new comment from {{consumerFirstName}}."
+    }
+  },
+  "commentOnComment": {
+    "subject": "New Comment Reply",
+    "plainText": {
+      "body": "{{replierFirstName}} replied to your comment."
+    }
+  },
+  "expertThankYouNote": {
+    "subject": "Thank you!",
+    "plainText": {
+      "body": "{{expertFirstName}} left you a thank you note!"
+    }
+  },
+  "availableSessionRecording": {
+    "subject": "Session Recording Available",
+    "plainText": {
+      "body": "Session recording is available."
+    }
+  },
+  "failedPaymentAuth": {
+    "subject": "We were unable to process your payment",
+    "plainText": {
+      "body": "There is an issue with your billing information."
+    }
+  },
+  "paymentCaptured": {
+    "subject": "You have successfully completed your session.",
+    "plainText": {
+      "body": "We have processed your payment of {{sessionAmount}} for your session with {{expertFirstName}}."
+    }
+  }
+}
